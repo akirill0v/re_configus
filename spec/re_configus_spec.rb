@@ -2,19 +2,18 @@ require 'spec_helper'
 
 describe ReConfigus do
   before(:all) do
-    ReConfigus.build :development do
-      env :development do
-        key 'development'
-        test 'value'
+    @reconfigus = ReConfigus.build :development do
+      env :development, :parent => :production do
+        my_key 'development'
       end
 
-      env :production, :parent => :development do
-        key 'production'
+      env :production do
+        my_key 'production2'
       end
     end
   end
 
   it "should get value from re_configus instance" do
-    re_configus.test.should eq('value')
+    @reconfigus.my_key.should eq('development')
   end
 end

@@ -1,26 +1,29 @@
 require 're_configus/builder_proxy'
 module ReConfigus
   class Builder
-    class << self
-      attr_accessor :default_env, :envs
 
-      def method_missing(method_sym, *arguments, &block)
-        proxy_builder = self.envs[self.default_env]
-      end
-
-      def respond_to?(method_sym, include_private = false)
-        super
-      end
+    def initialize(environment, &block)
+      @current_env = environment
+      @envs = {}
+      @block = block
     end
 
-    def self.build(&block)
-      self.envs = {}
-      instance_eval &block
+    def build
+      instance_eval(&@block)
     end
 
-    def self.env(name, options={}, &block)
-      self.envs[name] = BuilderProxy.new(options)
-      self.envs[name].build(&block)
+    def env(name, options = {}, &block)
+      @envs[name] = BuilderProxy.build(&block)
+      self
+    end
+
+    def method_missing(m, *args, &block)
+      @envs[@current_env].send(m)
+    end
+
+    def self.build(env, &block)
+      b = new(env, &block)
+      b.build
     end
 
   end

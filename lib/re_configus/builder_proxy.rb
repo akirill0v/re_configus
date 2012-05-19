@@ -1,11 +1,28 @@
 module ReConfigus
   class BuilderProxy
-    def initialize(options)
 
+    def initialize(&block)
+      @block = block
+      @hash = {}
     end
 
-    def build(&block)
+    def build
+      instance_eval(&@block)
+    end
 
+    def self.build(&block)
+      b = new(&block)
+      b.build
+    end
+
+    def method_missing(m, *args, &block)
+      if args.any?
+        @hash[m] = args.first
+        self
+      else
+        @hash[m]
+      end
     end
   end
+
 end
