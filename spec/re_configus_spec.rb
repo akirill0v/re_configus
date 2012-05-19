@@ -8,9 +8,9 @@ describe ReConfigus do
         test 'value'
       end
 
-      #env :production, :parent => :development do
-      #  key 'production'
-      #end
+      env :production, :parent => :development do
+        key 'production'
+      end
     end
   end
 

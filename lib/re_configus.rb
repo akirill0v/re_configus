@@ -5,7 +5,7 @@ require "re_configus/builder"
 module ReConfigus
   # Your code goes here...
   def re_configus
-    @re_configus ||= ReConfigus::Builder.new
+    ReConfigus::Builder
   end
 
   def build(env, &block)
