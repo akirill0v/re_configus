@@ -16,11 +16,16 @@ module ReConfigus
     end
 
     def method_missing(m, *args, &block)
-      if args.any?
-        @hash[m] = args.first
+      if block_given?
+        @hash[m] = self.class.build(&block)
         self
       else
-        @hash[m]
+        if args.any?
+          @hash[m] = args.first
+          self
+        else
+          @hash[m]
+        end
       end
     end
   end
