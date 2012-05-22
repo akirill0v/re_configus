@@ -8,6 +8,11 @@ describe ReConfigus do
         database do
           adapter 'sqlite'
         end
+        node1 do
+          node2 do
+            node_value 'value'
+          end
+        end
       end
 
       env :production do
@@ -22,5 +27,6 @@ describe ReConfigus do
 
   it "should retrive blocks from congifus" do
     @reconfigus.database.adapter.should eq('sqlite')
+    @reconfigus.node1.node2.node_value.should eq('value')
   end
 end

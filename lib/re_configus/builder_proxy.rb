@@ -8,6 +8,7 @@ module ReConfigus
 
     def build
       instance_eval(&@block)
+      self
     end
 
     def self.build(&block)
@@ -18,11 +19,9 @@ module ReConfigus
     def method_missing(m, *args, &block)
       if block_given?
         @hash[m] = self.class.build(&block)
-        self
       else
         if args.any?
           @hash[m] = args.first
-          self
         else
           @hash[m]
         end

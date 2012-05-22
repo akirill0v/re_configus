@@ -10,11 +10,11 @@ module ReConfigus
 
     def build
       instance_eval(&@block)
+      self
     end
 
     def env(name, options = {}, &block)
       @envs[name] = BuilderProxy.build(&block)
-      self
     end
 
     def method_missing(m, *args, &block)
