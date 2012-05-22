@@ -11,6 +11,16 @@ module ReConfigus
       self
     end
 
+    def [](key = nil)
+      @hash[key]
+    end
+
+    def to_hash
+      @hash.each do |k,v|
+        @hash[k] = v.kind_of?(ReConfigus::BuilderProxy) ? v.to_hash : v
+      end
+    end
+
     def self.build(&block)
       b = new(&block)
       b.build

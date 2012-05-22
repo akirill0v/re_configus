@@ -6,6 +6,7 @@ module ReConfigus
       @current_env = environment
       @envs = {}
       @block = block
+      @current = nil
     end
 
     def build
@@ -13,12 +14,21 @@ module ReConfigus
       self
     end
 
+    def [](key)
+      @current[key]
+    end
+
+    def to_hash
+      @current.to_hash
+    end
+
     def env(name, options = {}, &block)
       @envs[name] = BuilderProxy.build(&block)
     end
 
     def method_missing(m, *args, &block)
-      @envs[@current_env].send(m)
+      @current ||= @envs[@current_env]
+      @current.send(m)
     end
 
     def self.build(env, &block)

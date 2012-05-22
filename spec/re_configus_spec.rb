@@ -29,4 +29,13 @@ describe ReConfigus do
     @reconfigus.database.adapter.should eq('sqlite')
     @reconfigus.node1.node2.node_value.should eq('value')
   end
+
+  it "should acts as hash" do
+    @reconfigus[:node1][:node2][:node_value].should eq('value')
+  end
+
+  it "should have to_hash method and be as hash" do
+    @hash = {:my_key=>"development", :database=>{:adapter=>"sqlite"}, :node1=>{:node2=>{:node_value=>"value"}}}
+    @reconfigus.to_hash.should eq(@hash)
+  end
 end
