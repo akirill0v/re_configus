@@ -17,6 +17,7 @@ describe ReConfigus do
 
       env :production do
         my_key 'production2'
+        second_key 'production'
       end
     end
   end
@@ -34,8 +35,7 @@ describe ReConfigus do
     @reconfigus[:node1][:node2][:node_value].should eq('value')
   end
 
-  it "should have to_hash method and be as hash" do
-    @hash = {:my_key=>"development", :database=>{:adapter=>"sqlite"}, :node1=>{:node2=>{:node_value=>"value"}}}
-    @reconfigus.to_hash.should eq(@hash)
+  it "should inherist parent" do
+    @reconfigus.second_key.should eq('production')
   end
 end

@@ -1,13 +1,15 @@
 module ReConfigus
   class BuilderProxy
 
-    def initialize(&block)
+    def initialize(parent_env_name = nil, &block)
+      @parent_env_name = parent_env_name
       @block = block
       @hash = {}
     end
 
-    def build
+    def build(parent_hash = {})
       instance_eval(&@block)
+      @hash = parent_hash.merge(@hash)
       self
     end
 
@@ -15,10 +17,18 @@ module ReConfigus
       @hash[key]
     end
 
+    def _parent_env_name
+      @parent_env_name
+    end
+
     def to_hash
       @hash.each do |k,v|
         @hash[k] = v.kind_of?(ReConfigus::BuilderProxy) ? v.to_hash : v
       end
+    end
+
+    def self.prepare(parent, &block)
+      new(parent, &block)
     end
 
     def self.build(&block)

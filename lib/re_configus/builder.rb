@@ -7,10 +7,18 @@ module ReConfigus
       @envs = {}
       @block = block
       @current = nil
+      @clean_envs = []
     end
 
     def build
       instance_eval(&@block)
+      @clean_envs.each do |k|
+        @envs[k] = @envs[k].send(:build)
+      end
+      @envs.each do |k,v|
+        @envs[k] = v.send(:build, @envs[v._parent_env_name].to_hash || {}) unless @clean_envs.include?(k)
+      end
+      p @envs
       self
     end
 
@@ -23,7 +31,12 @@ module ReConfigus
     end
 
     def env(name, options = {}, &block)
-      @envs[name] = BuilderProxy.build(&block)
+      if block_given?
+        @clean_envs << name if options[:parent].nil?
+        @envs[name] = BuilderProxy.prepare(options[:parent], &block)
+      else
+        @envs[name]
+      end
     end
 
     def method_missing(m, *args, &block)
