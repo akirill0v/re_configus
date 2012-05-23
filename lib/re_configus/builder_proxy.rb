@@ -1,9 +1,11 @@
 module ReConfigus
   class BuilderProxy
 
-    def initialize(&block)
+    def initialize(builder, options, &block)
       @block = block
       @hash = {}
+      @builder = builder
+      @options = options
     end
 
     def build
@@ -21,14 +23,14 @@ module ReConfigus
       end
     end
 
-    def self.build(&block)
-      b = new(&block)
+    def self.build(builder, options, &block)
+      b = new(builder, options, &block)
       b.build
     end
 
     def method_missing(m, *args, &block)
       if block_given?
-        @hash[m] = self.class.build(&block)
+        @hash[m] = self.class.build(@builder, @options, &block)
       else
         if args.any?
           @hash[m] = args.first

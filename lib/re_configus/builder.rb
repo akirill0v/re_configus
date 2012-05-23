@@ -23,7 +23,7 @@ module ReConfigus
     end
 
     def env(name, options = {}, &block)
-      @envs[name] = BuilderProxy.build(&block)
+      @envs[name] = BuilderProxy.build(self, options, &block)
     end
 
     def method_missing(m, *args, &block)
